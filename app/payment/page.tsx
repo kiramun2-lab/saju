@@ -74,7 +74,7 @@ export default function PaymentPage() {
             <div>
               <p className="text-sm font-semibold text-foreground">운명읽기 리포트</p>
               <p className="mt-1 text-foreground/70">
-                나만의 언어로 읽어주는 감성 운명 리포트
+                나만의 언어로 읽어주는 감성 AI 운명 리포트
               </p>
             </div>
             <p className="text-right text-sm font-semibold text-gradient-gold">990원</p>

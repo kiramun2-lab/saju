@@ -62,7 +62,7 @@ export default function MyPage() {
               }
             />
             <div className="flex items-center justify-between text-[11px] text-foreground/60">
-              <span suppressHydrationWarning>
+              <span>
                 생성일:{" "}
                 {new Date(report.createdAt).toLocaleDateString("ko-KR", {
                   year: "numeric",
@@ -73,12 +73,14 @@ export default function MyPage() {
               <span className="text-accent-gold">990원</span>
             </div>
             <div className="mt-3 flex gap-2 text-xs">
-              <a
-                href={report.productType === "saju" ? "/saju/result" : "#"}
-                className="inline-flex w-full items-center justify-center rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm font-semibold text-foreground shadow-card-soft transition hover:bg-white/12"
+              <Button
+                as-child={true as never}
+                fullWidth
               >
-                리포트 다시 보기
-              </a>
+                <a href={report.productType === "saju" ? "/saju/result" : "#"}>
+                  리포트 다시 보기
+                </a>
+              </Button>
               <Button
                 type="button"
                 variant="outline"

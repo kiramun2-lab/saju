@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { clsx } from 'clsx';
-import { hashSajuInput } from '../../lib/leadMessages';
 
 type SajuFormState = {
   name: string;
@@ -54,12 +53,6 @@ export default function SajuInputPage() {
   const [errors, setErrors] = useState<SajuFormErrors>({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progressPct, setProgressPct] = useState(0);
-  const [maxBirthDate, setMaxBirthDate] = useState('');
-
-  useEffect(() => {
-    const today = new Date();
-    setMaxBirthDate(today.toISOString().slice(0, 10));
-  }, []);
   const [stepIndex, setStepIndex] = useState(0);
   const [showCta, setShowCta] = useState(false);
   const timelineStart = useRef<number | null>(null);
@@ -118,11 +111,7 @@ export default function SajuInputPage() {
   };
 
   const goToResult = () => {
-    const seed = hashSajuInput(form);
-    try {
-      sessionStorage.setItem('saju_result_form', JSON.stringify(form));
-    } catch {}
-    router.push(`/saju/result?seed=${seed}`);
+    router.push('/saju/result');
   };
 
   const inputBase =
@@ -216,10 +205,11 @@ export default function SajuInputPage() {
       <div className="cosmic-glass-panel rounded-2xl p-5">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className={labelClass}>이름</label>
+            <label className={labelClass}>이름 (선택)</label>
             <input
               type="text"
               className={inputBase}
+              placeholder="예: 은하"
               value={form.name}
               onChange={(e) => handleChange('name', e.target.value)}
             />
@@ -248,8 +238,6 @@ export default function SajuInputPage() {
                 type="date"
                 className={inputBase + ' flex-1'}
                 value={form.birthDate}
-                min="1900-01-01"
-                max={maxBirthDate}
                 onChange={(e) => handleChange('birthDate', e.target.value)}
               />
               <div className="flex shrink-0 gap-1">

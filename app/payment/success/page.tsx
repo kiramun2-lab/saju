@@ -81,7 +81,13 @@ function PaymentSuccessContent() {
 
 export default function PaymentSuccessPage() {
   return (
-    <Suspense fallback={<main className="flex min-h-[50vh] flex-col items-center justify-center px-6"><p className="text-white/80">로딩 중...</p></main>}>
+    <Suspense
+      fallback={
+        <main className="flex min-h-[50vh] flex-col items-center justify-center px-6">
+          <p className="text-white/80">결제를 확인하고 있어요...</p>
+        </main>
+      }
+    >
       <PaymentSuccessContent />
     </Suspense>
   );

@@ -37,9 +37,8 @@ npx vercel
 
 나중에 다음을 쓸 때 Vercel **Settings → Environment Variables**에 추가하세요.
 
-- Supabase: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- 카카오 로그인: `NEXT_PUBLIC_KAKAO_JS_KEY` 등
-- 결제: 포트원/토스 등 키
+- 카카오 로그인: `NEXT_PUBLIC_KAKAO_JS_KEY`, `KAKAO_REST_API_KEY`, `NEXT_PUBLIC_KAKAO_REDIRECT_URI`
+- 결제(토스): `NEXT_PUBLIC_TOSS_CLIENT_KEY`, `TOSS_SECRET_KEY`
 
 코드에서는 `process.env.NEXT_PUBLIC_XXX` 형태로 사용합니다.
 

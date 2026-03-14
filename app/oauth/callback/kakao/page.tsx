@@ -72,7 +72,13 @@ function KakaoCallbackContent() {
 
 export default function KakaoCallbackPage() {
   return (
-    <Suspense fallback={<main className="flex min-h-[40vh] flex-col items-center justify-center px-6"><p className="text-white/80">로그인 처리 중...</p></main>}>
+    <Suspense
+      fallback={
+        <main className="flex min-h-[40vh] flex-col items-center justify-center px-6">
+          <p className="text-white/80">로그인 처리 중...</p>
+        </main>
+      }
+    >
       <KakaoCallbackContent />
     </Suspense>
   );

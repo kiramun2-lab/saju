@@ -2,10 +2,8 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { clsx } from 'clsx';
 import { DESTINY_AREAS } from '../../../lib/dummyData';
-import { getLeadsForResult, getLeadForSection } from '../../../lib/leadMessages';
 
 const PAYMENT_PRICE = 990;
 
@@ -32,42 +30,9 @@ function LockIcon({ className }: { className?: string }) {
 }
 
 export default function SajuResultPage() {
-  const searchParams = useSearchParams();
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
   const [scrollIndex, setScrollIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
-  /** 같은 조건(이름·성별·생년월일·시간 등)이면 같은 seed → 같은 리드 조합 */
-  const seedParam = searchParams.get('seed');
-  const seedNum = seedParam != null ? Number(seedParam) : undefined;
-  const effectiveSeed =
-    seedNum !== undefined && !Number.isNaN(seedNum) ? seedNum : undefined;
-  const [leads] = useState(() => getLeadsForResult(effectiveSeed));
-  /** AI로 생성한 상세 문단 (키: 섹션 id). null이면 아직 로드 전, 없으면 더미 사용 */
-  const [aiDetails, setAiDetails] = useState<Record<string, string[]> | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    try {
-      const raw = sessionStorage.getItem('saju_result_form');
-      const form = raw ? (JSON.parse(raw) as Record<string, string>) : null;
-      if (!form || cancelled) return;
-      fetch('/api/saju/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ form, leads }),
-      })
-        .then((res) => res.json())
-        .then((data: { details?: Record<string, string[]> }) => {
-          if (!cancelled && data.details) setAiDetails(data.details);
-        })
-        .catch(() => {});
-    } catch {
-      setAiDetails(null);
-    }
-    return () => {
-      cancelled = true;
-    };
-  }, [leads]);
 
   const handleCardClick = (index: number) => {
     setFlippedIndex((prev) => (prev === index ? null : index));
@@ -129,46 +94,48 @@ export default function SajuResultPage() {
                 aria-label={`${area.theme} 카드, ${isFlipped ? '앞면으로' : '뒷면 보기'} 탭`}
               >
                 <div className="flip-card-inner h-full w-full">
-                  {/* 앞면: 아이콘, 테마, 리드(그라데이션), 뒤집기 힌트만 */}
+                  {/* 앞면: 테마, 리드 (가운데 정렬, 크게) */}
                   <div
                     className={clsx(
-                      'flip-card-front cosmic-glass-panel flex flex-col items-center justify-center px-5 py-6 text-center',
+                      'flip-card-front cosmic-glass-panel items-center justify-center px-5 py-6 text-center',
                       !isActive && isFree && 'flip-card-halo',
                       !isActive && !isFree && 'flip-card-glow'
                     )}
                   >
-                    <span className="text-2xl text-white/50" aria-hidden>
+                    <span className="text-2xl text-white/40" aria-hidden>
                       {CARD_ICONS[index % CARD_ICONS.length]}
                     </span>
-                    <p className="result-card-theme mt-3 text-[11px] font-medium uppercase tracking-[0.2em] text-white/50">
+                    <p className="mt-3 text-[12px] font-medium uppercase tracking-wider text-white/50">
                       {area.theme}
                     </p>
-                    <p className="result-card-lead mt-3 leading-snug">
-                      {leads[index] ?? getLeadForSection(area.id, 0)}
-                    </p>
-                    <p className="mt-6 text-[11px] text-white/35">
-                      탭하여 카드 뒤집기
+                    <p className="mt-2 text-[18px] font-medium leading-snug text-white/95">
+                      {area.lead}
                     </p>
                   </div>
 
-                  {/* 뒷면: 디테일 텍스트 스크롤 영역 (max-h 420px) 또는 잠금 */}
+                  {/* 뒷면: 무료는 디테일, 잠금은 결제 유도 */}
                   <div
                     className={clsx(
-                      'flip-card-back cosmic-glass-panel flex flex-col px-5 py-5',
+                      'flip-card-back cosmic-glass-panel px-5 py-5',
                       !isActive && isFree && 'flip-card-halo',
                       !isActive && !isFree && 'flip-card-glow'
                     )}
                   >
                     {isFree ? (
-                      <div
-                        className="result-card-body max-h-[420px] flex-1 space-y-4 overflow-y-auto text-[13px] leading-relaxed text-white/90"
-                        style={{ maxHeight: '420px' }}
-                      >
-                        {(aiDetails?.[area.id] ?? area.detailParagraphs).map((para, i) => (
-                          <p key={i} className="text-white/88 leading-[1.75]">
-                            {para}
-                          </p>
-                        ))}
+                      <div className="flex h-full flex-col overflow-y-auto">
+                        <p className="font-serif text-[13px] leading-relaxed text-[#e8d5a3]/95">
+                          {area.keySentence}
+                        </p>
+                        <div className="mt-3 flex-1 space-y-2">
+                          {area.detailParagraphs.map((para, i) => (
+                            <p
+                              key={i}
+                              className="text-[12px] leading-relaxed text-white/80"
+                            >
+                              {para}
+                            </p>
+                          ))}
+                        </div>
                       </div>
                     ) : (
                       <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
