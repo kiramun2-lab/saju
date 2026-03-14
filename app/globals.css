@@ -1,0 +1,314 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+:root {
+  height: 100%;
+}
+
+body {
+  @apply antialiased;
+}
+
+/* ——— Cosmic: black background (stars are separate) ——— */
+.cosmic-bg {
+  background-color: #000000;
+}
+
+/* ——— Star twinkle ——— */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+  50% { transform: translate(var(--dx, 8px), var(--dy, -6px)); opacity: 0.85; }
+}
+
+.star {
+  animation: twinkle var(--duration, 4s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.dust-particle {
+  animation: float var(--duration, 18s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* ——— Hero oracle: SVG 캔버스 (radialGradient + mask 성운) + 검은 원 + 타이틀 ——— */
+.hero-oracle {
+  position: relative;
+  width: 360px;
+  height: 360px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+.hero-oracle--svg .hero-oracle__canvas {
+  display: block;
+  grid-area: 1 / 1;
+}
+
+.hero-oracle--svg .hero-oracle__title {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 1;
+  color: white;
+  font-family: var(--font-serif), "Noto Serif KR", serif;
+  font-size: 42px;
+  letter-spacing: 0.04em;
+  text-shadow:
+    0 0 12px rgba(255, 255, 255, 0.18),
+    0 0 24px rgba(255, 255, 255, 0.08);
+}
+
+
+
+/* unused noise on halo so edge isn’t uniform */
+/* CTA: 운명 읽어보기 — 폰트·키 강조 */
+.cta-saju {
+  font-family: var(--font-serif), "Noto Serif KR", serif;
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.06);
+}
+.cta-saju:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 0 28px rgba(255, 255, 255, 0.12);
+}
+
+.scroll-fade {
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+}
+
+.text-gradient-gold {
+  background: linear-gradient(120deg, #e8d5a3, #f5e6b8);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+}
+
+/* ——— Saju: cosmic glass panel (oracle form) ——— */
+.cosmic-glass-panel {
+  background: rgba(10, 10, 15, 0.55);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+/* ——— Segmented toggle: selected cosmic glow ——— */
+.segmented-toggle-selected {
+  border-color: rgba(245, 199, 107, 0.5);
+  background: rgba(245, 199, 107, 0.12);
+  box-shadow:
+    0 0 16px rgba(245, 199, 107, 0.2),
+    inset 0 0 12px rgba(255, 255, 255, 0.04);
+}
+
+/* ——— CTA: 내 운명 읽기 (minimal glow) ——— */
+.cta-saju-read {
+  font-family: var(--font-serif), "Noto Serif KR", serif;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.08);
+}
+.cta-saju-read:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 32px rgba(255, 255, 255, 0.12);
+}
+
+/* ——— Cosmic analysis loading ——— */
+@keyframes cosmic-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.98); }
+  50% { opacity: 0.9; transform: scale(1.02); }
+}
+@keyframes cosmic-orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(2px, -3px) scale(1.02); }
+  66% { transform: translate(-2px, 2px) scale(0.98); }
+}
+.cosmic-loading-orb {
+  animation: cosmic-orb-float 4s ease-in-out infinite;
+}
+.cosmic-loading-glow {
+  animation: cosmic-pulse 2.5s ease-in-out infinite;
+}
+
+/* ——— CTA reveal (100% 후 버튼 등장) ——— */
+@keyframes cta-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(0) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.cta-reveal {
+  animation: cta-reveal 600ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ——— 결과 페이지: accordion expand ——— */
+.accordion-content {
+  display: grid;
+  transition: grid-template-rows 0.35s ease-out;
+}
+.accordion-content[data-open="false"] {
+  grid-template-rows: 0fr;
+}
+.accordion-content[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.accordion-content-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ——— 결과 카드: premium · immersive ——— */
+.result-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.result-card:active {
+  transform: scale(0.99);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.result-card-open {
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.75), 0 0 28px rgba(255, 255, 255, 0.06);
+}
+.result-card-halo {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 40px rgba(245, 199, 107, 0.12);
+}
+.result-card-halo.result-card-open {
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 0 48px rgba(245, 199, 107, 0.18);
+}
+
+/* ——— 결과 페이지: horizontal card carousel (첫 카드 가운데, 오른쪽 살짝 노출) ——— */
+.result-carousel {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5rem max(0.5rem, calc(50% - min(39vw, 150px))) 1.5rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.result-carousel::-webkit-scrollbar {
+  display: none;
+}
+.result-carousel-card-wrap {
+  flex: 0 0 auto;
+  width: 78vw;
+  max-width: 300px;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+/* ——— Flip card (rotateY, 400ms) ——— */
+.flip-card {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  min-height: 280px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s ease;
+  transform-style: preserve-3d;
+}
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.flip-card-front {
+  transform: rotateY(0deg);
+}
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+.flip-card-glow {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 24px rgba(255, 255, 255, 0.04);
+}
+.flip-card-halo {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 32px rgba(245, 199, 107, 0.14);
+}
+
+/* 중앙에 온 메인 카드: 황금빛 등 + 색감 (래퍼에 적용해 글로우가 잘리지 않음) */
+.result-carousel-card-wrap.flip-card-active {
+  border-radius: 1.25rem;
+}
+.result-carousel-card-wrap.flip-card-active .flip-card-front,
+.result-carousel-card-wrap.flip-card-active .flip-card-back {
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(245, 199, 107, 0.28),
+    0 0 36px rgba(245, 199, 107, 0.24),
+    0 0 72px rgba(245, 199, 107, 0.1);
+}
+.result-carousel-card-wrap.flip-card-active .flip-card-front {
+  background: linear-gradient(
+    160deg,
+    rgba(18, 16, 24, 0.7) 0%,
+    rgba(26, 22, 34, 0.65) 40%,
+    rgba(30, 26, 38, 0.7) 100%
+  );
+  border: 1px solid rgba(245, 199, 107, 0.12);
+}
+.result-carousel-card-wrap.flip-card-active .flip-card-back {
+  background: linear-gradient(
+    160deg,
+    rgba(18, 16, 24, 0.7) 0%,
+    rgba(26, 22, 34, 0.65) 40%,
+    rgba(30, 26, 38, 0.7) 100%
+  );
+  border: 1px solid rgba(245, 199, 107, 0.12);
+}
