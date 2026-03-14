@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'fail'>('loading');
   const [error, setError] = useState<string | null>(null);
@@ -76,5 +76,13 @@ export default function PaymentSuccessPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={<main className="flex min-h-[50vh] flex-col items-center justify-center px-6"><p className="text-white/80">로딩 중...</p></main>}>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }
