@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { Card, CardFooter, CardHeader } from '../ui/card';
-import { Button } from '../ui/button';
 import { PRODUCTS } from '../../lib/dummyData';
 
 export function ProductCards() {
@@ -21,12 +20,12 @@ export function ProductCards() {
             <p>990원에 받는 감성적인 나만의 사주 리포트.</p>
             <p className="mt-1 text-accent-gold">단 990원 · 모바일 전용</p>
           </div>
-          <Button
-            as-child={true as never}
-            size={undefined as never}
+          <Link
+            href="/saju"
+            className="inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition-all bg-white/8 text-foreground shadow-card-soft hover:bg-white/12 border border-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99]"
           >
-            <Link href="/saju">사주 입력하기</Link>
-          </Button>
+            사주 입력하기
+          </Link>
         </CardFooter>
       </Card>
     </div>
