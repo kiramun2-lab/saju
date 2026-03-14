@@ -29,9 +29,7 @@ export default function LandingPage() {
               사주일까요?
             </p>
             <p className="mt-4 text-[16px] leading-[1.7] text-white opacity-80">
-              태어난 순간의 흐름을 분석해
-              <br />
-              당신의 운명을 읽어드립니다.
+              사주의 흐름을 풀어낸 운명 리포트
             </p>
           </div>
         </div>

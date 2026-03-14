@@ -19,7 +19,7 @@ export default function SajuAnalyzePage() {
         <p className="mt-4 text-sm leading-relaxed text-white/70">
           잠시만 기다려 주시면
           <br />
-          감성적인 AI 사주 리포트가 준비됩니다.
+          감성적인 사주 리포트가 준비됩니다.
         </p>
         <div className="mt-6 flex flex-col gap-2">
           <Link
