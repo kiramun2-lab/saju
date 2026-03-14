@@ -5,17 +5,25 @@ import { useMemo } from 'react';
 const STAR_COUNT = 220;
 const DUST_COUNT = 24;
 
+/** 시드 하나로 0~1 구간의 의사난수 (한 줄/대각선 패턴 없이 흩어지게) */
+function rand(seed: number): number {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+}
+
 function useSeededPositions(seed: number, count: number) {
   return useMemo(() => {
     const out: { left: string; top: string; delay: string; duration: string }[] = [];
     for (let i = 0; i < count; i++) {
-      const s = (seed * (i + 1) + i * 7) % 100;
-      const t = (i * 11 + s * 3) % 100;
+      const s1 = seed + i * 7919;
+      const s2 = seed + i * 4001 + 31;
+      const left = 2 + rand(s1) * 96;
+      const top = 2 + rand(s2) * 96;
       out.push({
-        left: `${((s * 13 + i * 5) % 98) + 1}%`,
-        top: `${((t * 17 + i * 11) % 98) + 1}%`,
-        delay: `${(i * 0.28 + s * 0.02) % 5}s`,
-        duration: `${2.8 + (i % 5) * 1.1}s`
+        left: `${left}%`,
+        top: `${top}%`,
+        delay: `${rand(s1 + 7) * 5}s`,
+        duration: `${2.4 + rand(s2 + 11) * 3.2}s`
       });
     }
     return out;
@@ -26,12 +34,14 @@ function useDustPositions() {
   return useMemo(() => {
     const out: { left: string; top: string; delay: string; dx: number; dy: number }[] = [];
     for (let i = 0; i < DUST_COUNT; i++) {
+      const left = 5 + rand(i * 6781 + 1) * 90;
+      const top = 5 + rand(i * 7829 + 2) * 90;
       out.push({
-        left: `${(i * 19 + 7) % 100}%`,
-        top: `${(i * 23 + 13) % 100}%`,
-        delay: `${(i * 0.6) % 8}s`,
-        dx: (i % 5 - 2) * 10,
-        dy: (i % 3 - 1) * -8
+        left: `${left}%`,
+        top: `${top}%`,
+        delay: `${rand(i * 3 + 5) * 8}s`,
+        dx: (rand(i * 11) - 0.5) * 24,
+        dy: (rand(i * 13 + 1) - 0.5) * -16
       });
     }
     return out;

@@ -26,6 +26,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/MaruBuri.css"
         />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+        />
       </head>
       <Script
         src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
@@ -39,7 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         )}
         style={{ fontFamily: "'MaruBuri', 'Maruburi', sans-serif" }}
       >
-        <div className="mx-auto min-h-screen max-w-md overflow-hidden pt-8">
+        <div className="mx-auto min-h-screen max-w-md overflow-hidden pt-3">
           <AuthProvider>{children}</AuthProvider>
         </div>
       </body>

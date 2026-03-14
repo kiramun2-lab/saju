@@ -273,16 +273,43 @@ body {
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.7),
     0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 0 24px rgba(255, 255, 255, 0.04);
+    0 0 24px rgba(255, 255, 255, 0.04),
+    0 0 40px rgba(255, 210, 120, 0.15);
 }
 .flip-card-halo {
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.7),
     0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 0 32px rgba(245, 199, 107, 0.14);
+    0 0 32px rgba(245, 199, 107, 0.14),
+    0 0 40px rgba(255, 210, 120, 0.15);
 }
 
-/* 중앙에 온 메인 카드: 황금빛 등 + 색감 (래퍼에 적용해 글로우가 잘리지 않음) */
+/* 리드 메시지: gradient text (gold → lavender), MaruBuri 22px 600 */
+.result-card-lead {
+  font-family: 'MaruBuri', 'Maruburi', serif;
+  font-size: 22px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #FFD97A 0%, #C7A6FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  word-break: keep-all; /* 단어 중간 줄바꿈 방지, 통째로 다음 줄로 */
+}
+
+/* 테마·본문: Pretendard */
+.result-card-theme {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  word-break: keep-all;
+}
+.result-card-body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  word-break: keep-all;
+}
+.result-card-body p {
+  word-break: keep-all;
+}
+
+/* 중앙에 온 메인 카드: subtle glow + 색감 */
 .result-carousel-card-wrap.flip-card-active {
   border-radius: 1.25rem;
 }
@@ -292,7 +319,8 @@ body {
     0 24px 64px rgba(0, 0, 0, 0.65),
     0 0 0 1px rgba(245, 199, 107, 0.28),
     0 0 36px rgba(245, 199, 107, 0.24),
-    0 0 72px rgba(245, 199, 107, 0.1);
+    0 0 72px rgba(245, 199, 107, 0.1),
+    0 0 40px rgba(255, 210, 120, 0.15);
 }
 .result-carousel-card-wrap.flip-card-active .flip-card-front {
   background: linear-gradient(
