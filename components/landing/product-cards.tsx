@@ -17,7 +17,7 @@ export function ProductCards() {
         />
         <CardFooter>
           <div className="text-xs text-foreground/60">
-            <p>990원에 받는 감성적인 나만의 사주 리포트.</p>
+            <p>990원에 받는 나만의 운명 리포트.</p>
             <p className="mt-1 text-accent-gold">단 990원 · 모바일 전용</p>
           </div>
           <Link

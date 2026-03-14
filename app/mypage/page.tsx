@@ -40,6 +40,7 @@ export default function MyPage() {
         {MOCK_REPORT_LIST.map((report) => (
           <Card
             key={report.id}
+            noOverlay
             className="bg-muted/80"
           >
             <CardHeader

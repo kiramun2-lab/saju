@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { Suspense, useState, useRef, useCallback, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { clsx } from 'clsx';
 import { DESTINY_AREAS } from '../../../lib/dummyData';
+import { getLeadsForResult } from '../../../lib/leadMessages';
 
 const PAYMENT_PRICE = 990;
 
@@ -29,10 +31,42 @@ function LockIcon({ className }: { className?: string }) {
   );
 }
 
-export default function SajuResultPage() {
+function SajuResultContent() {
+  const searchParams = useSearchParams();
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
   const [scrollIndex, setScrollIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  const seedParam = searchParams.get('seed');
+  const seedNum = seedParam != null ? Number(seedParam) : undefined;
+  const effectiveSeed =
+    seedNum !== undefined && !Number.isNaN(seedNum) ? seedNum : undefined;
+  const [leads] = useState(() => getLeadsForResult(effectiveSeed));
+  const [aiDetails, setAiDetails] = useState<Record<string, string[]> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    try {
+      const raw = sessionStorage.getItem('saju_result_form');
+      const form = raw ? (JSON.parse(raw) as Record<string, string>) : null;
+      if (!form || cancelled) return;
+      fetch('/api/saju/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ form, leads }),
+      })
+        .then((res) => res.json())
+        .then((data: { details?: Record<string, string[]> }) => {
+          if (!cancelled && data.details) setAiDetails(data.details);
+        })
+        .catch(() => {});
+    } catch {
+      setAiDetails(null);
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, [leads]);
 
   const handleCardClick = (index: number) => {
     setFlippedIndex((prev) => (prev === index ? null : index));
@@ -94,10 +128,10 @@ export default function SajuResultPage() {
                 aria-label={`${area.theme} 카드, ${isFlipped ? '앞면으로' : '뒷면 보기'} 탭`}
               >
                 <div className="flip-card-inner h-full w-full">
-                  {/* 앞면: 테마, 리드 (가운데 정렬, 크게) */}
+                  {/* 앞면: 아이콘 · 테마(Pretendard) · 리드(그라데이션 MaruBuri) · 뒤집기 힌트만 */}
                   <div
                     className={clsx(
-                      'flip-card-front cosmic-glass-panel items-center justify-center px-5 py-6 text-center',
+                      'flip-card-front cosmic-glass-panel flex flex-col items-center justify-center px-5 py-6 text-center',
                       !isActive && isFree && 'flip-card-halo',
                       !isActive && !isFree && 'flip-card-glow'
                     )}
@@ -105,15 +139,24 @@ export default function SajuResultPage() {
                     <span className="text-2xl text-white/40" aria-hidden>
                       {CARD_ICONS[index % CARD_ICONS.length]}
                     </span>
-                    <p className="mt-3 text-[12px] font-medium uppercase tracking-wider text-white/50">
+                    <p
+                      className="mt-3 text-[11px] font-semibold uppercase tracking-widest text-white/60"
+                      style={{ fontFamily: "'Pretendard', sans-serif" }}
+                    >
                       {area.theme}
                     </p>
-                    <p className="mt-2 text-[18px] font-medium leading-snug text-white/95">
-                      {area.lead}
+                    <p className="mt-3 result-card-lead-gradient leading-snug">
+                      {leads[index] ?? area.lead}
+                    </p>
+                    <p
+                      className="mt-5 text-[10px] text-white/35"
+                      style={{ fontFamily: "'Pretendard', sans-serif" }}
+                    >
+                      탭하여 뒤집기
                     </p>
                   </div>
 
-                  {/* 뒷면: 무료는 디테일, 잠금은 결제 유도 */}
+                  {/* 뒷면: 스크롤 가능한 디테일 (4~5문단, Pretendard 본문) */}
                   <div
                     className={clsx(
                       'flip-card-back cosmic-glass-panel px-5 py-5',
@@ -122,15 +165,18 @@ export default function SajuResultPage() {
                     )}
                   >
                     {isFree ? (
-                      <div className="flex h-full flex-col overflow-y-auto">
-                        <p className="font-serif text-[13px] leading-relaxed text-[#e8d5a3]/95">
+                      <div className="result-card-back-scroll flex h-full flex-col pr-1">
+                        <p
+                          className="text-[13px] font-medium leading-relaxed text-[#e8d5a3]/95"
+                          style={{ fontFamily: "'Pretendard', sans-serif" }}
+                        >
                           {area.keySentence}
                         </p>
-                        <div className="mt-3 flex-1 space-y-2">
-                          {area.detailParagraphs.map((para, i) => (
+                        <div className="mt-4 space-y-3" style={{ fontFamily: "'Pretendard', sans-serif" }}>
+                          {(aiDetails?.[area.id] ?? area.detailParagraphs).map((para, i) => (
                             <p
                               key={i}
-                              className="text-[12px] leading-relaxed text-white/80"
+                              className="text-[13px] leading-[1.75] text-white/85"
                             >
                               {para}
                             </p>
@@ -191,5 +237,19 @@ export default function SajuResultPage() {
         ))}
       </div>
     </main>
+  );
+}
+
+export default function SajuResultPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center text-white/60">
+          로딩 중…
+        </div>
+      }
+    >
+      <SajuResultContent />
+    </Suspense>
   );
 }

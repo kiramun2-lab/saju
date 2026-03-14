@@ -312,3 +312,43 @@ body {
   );
   border: 1px solid rgba(245, 199, 107, 0.12);
 }
+
+/* ——— 결과 카드: 리드 그라데이션 텍스트 (premium) ——— */
+.result-card-lead-gradient {
+  font-family: 'MaruBuri', 'Maruburi', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #FFD97A 0%, #C7A6FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ——— 결과 카드: subtle glow (cosmic / premium) ——— */
+.result-carousel-card-wrap.flip-card-active .flip-card-front,
+.result-carousel-card-wrap.flip-card-active .flip-card-back {
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(245, 199, 107, 0.28),
+    0 0 36px rgba(245, 199, 107, 0.24),
+    0 0 72px rgba(245, 199, 107, 0.1),
+    0 0 40px rgba(255, 210, 120, 0.15);
+}
+
+/* ——— 결과 카드 뒷면: 스크롤 영역 ——— */
+.result-card-back-scroll {
+  max-height: 420px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.result-card-back-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.result-card-back-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 2px;
+}
+.result-card-back-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}

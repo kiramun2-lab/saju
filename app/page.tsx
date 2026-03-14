@@ -37,16 +37,16 @@ export default function LandingPage() {
         </div>
       </main>
 
-      {/* CTA: 운명 읽어보기 */}
+      {/* CTA: 운명 읽기 시작 */}
       <div
         className="fixed bottom-8 left-1/2 z-20 w-[85%] max-w-[360px] -translate-x-1/2"
-        aria-label="운명 읽어보기"
+        aria-label="운명 읽기 시작"
       >
         <Link
           href="/saju"
           className="cta-saju block w-full rounded-full py-4 text-center font-semibold tracking-wide text-white transition hover:opacity-95"
         >
-          운명 읽어보기
+          운명 읽기 시작
         </Link>
       </div>
     </>

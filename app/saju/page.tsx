@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { clsx } from 'clsx';
+import { hashSajuInput } from '../../lib/leadMessages';
 
 type SajuFormState = {
   name: string;
@@ -55,8 +56,13 @@ export default function SajuInputPage() {
   const [progressPct, setProgressPct] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
   const [showCta, setShowCta] = useState(false);
+  const [maxDate, setMaxDate] = useState('');
   const timelineStart = useRef<number | null>(null);
   const rafId = useRef<number>(0);
+
+  useEffect(() => {
+    setMaxDate(new Date().toISOString().slice(0, 10));
+  }, []);
 
   const handleChange = (field: keyof SajuFormState, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -65,6 +71,8 @@ export default function SajuInputPage() {
 
   const validate = (): boolean => {
     const nextErrors: SajuFormErrors = {};
+    const nameTrim = form.name?.trim() ?? '';
+    if (!nameTrim) nextErrors.name = '이름을 입력해주세요.';
     if (!form.birthDate) nextErrors.birthDate = '생년월일을 선택해주세요.';
     if (!form.calendarType) nextErrors.calendarType = '양력/음력을 선택해주세요.';
     if (!form.gender) nextErrors.gender = '성별을 선택해주세요.';
@@ -111,7 +119,20 @@ export default function SajuInputPage() {
   };
 
   const goToResult = () => {
-    router.push('/saju/result');
+    const seed = hashSajuInput({
+      name: form.name,
+      relation: form.relation,
+      birthDate: form.birthDate,
+      calendarType: form.calendarType,
+      birthTime: form.birthTime,
+      gender: form.gender,
+    });
+    try {
+      sessionStorage.setItem('saju_result_form', JSON.stringify(form));
+    } catch {
+      // ignore
+    }
+    router.push(`/saju/result?seed=${seed}`);
   };
 
   const inputBase =
@@ -205,14 +226,18 @@ export default function SajuInputPage() {
       <div className="cosmic-glass-panel rounded-2xl p-5">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className={labelClass}>이름 (선택)</label>
+            <label className={labelClass}>이름</label>
             <input
               type="text"
               className={inputBase}
-              placeholder="예: 은하"
+              placeholder="이름을 입력하세요"
               value={form.name}
               onChange={(e) => handleChange('name', e.target.value)}
+              required
             />
+            {errors.name && (
+              <p className="mt-1 text-[11px] text-amber-400/90">{errors.name}</p>
+            )}
           </div>
 
           <div>
@@ -237,6 +262,8 @@ export default function SajuInputPage() {
               <input
                 type="date"
                 className={inputBase + ' flex-1'}
+                min="1900-01-01"
+                max={maxDate || undefined}
                 value={form.birthDate}
                 onChange={(e) => handleChange('birthDate', e.target.value)}
               />

@@ -5,17 +5,26 @@ import { useMemo } from 'react';
 const STAR_COUNT = 220;
 const DUST_COUNT = 24;
 
+/** 시드 기반 의사난수 (서버/클라이언트 동일 → Hydration 안전), 별 위치 흐트러뜨리기용 */
+function mulberry32(seed: number) {
+  return function next() {
+    let t = (seed += 0x6d2b79f5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 function useSeededPositions(seed: number, count: number) {
   return useMemo(() => {
+    const rng = mulberry32(seed);
     const out: { left: string; top: string; delay: string; duration: string }[] = [];
     for (let i = 0; i < count; i++) {
-      const s = (seed * (i + 1) + i * 7) % 100;
-      const t = (i * 11 + s * 3) % 100;
       out.push({
-        left: `${((s * 13 + i * 5) % 98) + 1}%`,
-        top: `${((t * 17 + i * 11) % 98) + 1}%`,
-        delay: `${(i * 0.28 + s * 0.02) % 5}s`,
-        duration: `${2.8 + (i % 5) * 1.1}s`
+        left: `${rng() * 97 + 1}%`,
+        top: `${rng() * 97 + 1}%`,
+        delay: `${rng() * 5}s`,
+        duration: `${2.2 + rng() * 2.5}s`
       });
     }
     return out;
@@ -24,14 +33,15 @@ function useSeededPositions(seed: number, count: number) {
 
 function useDustPositions() {
   return useMemo(() => {
+    const rng = mulberry32(12345);
     const out: { left: string; top: string; delay: string; dx: number; dy: number }[] = [];
     for (let i = 0; i < DUST_COUNT; i++) {
       out.push({
-        left: `${(i * 19 + 7) % 100}%`,
-        top: `${(i * 23 + 13) % 100}%`,
-        delay: `${(i * 0.6) % 8}s`,
-        dx: (i % 5 - 2) * 10,
-        dy: (i % 3 - 1) * -8
+        left: `${rng() * 98 + 1}%`,
+        top: `${rng() * 98 + 1}%`,
+        delay: `${rng() * 8}s`,
+        dx: (rng() * 40 - 20) | 0,
+        dy: (rng() * -24 + 4) | 0
       });
     }
     return out;

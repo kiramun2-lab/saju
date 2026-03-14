@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardHeader } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 
@@ -24,6 +24,10 @@ type CompatFormErrors = {
 };
 
 export default function CompatInputPage() {
+  const [maxDate, setMaxDate] = useState("");
+  useEffect(() => {
+    setMaxDate(new Date().toISOString().slice(0, 10));
+  }, []);
   const [form, setForm] = useState<CompatFormState>({
     personA: { name: "", birthDate: "", birthTime: "", gender: "" },
     personB: { name: "", birthDate: "", birthTime: "", gender: "" },
@@ -87,7 +91,7 @@ export default function CompatInputPage() {
               이름 (선택)
               <input
                 className="mt-1 w-full rounded-xl border border-white/10 bg-background/60 px-3 py-2 text-sm text-foreground placeholder:text-foreground/40 focus:border-accent-gold focus:outline-none"
-                placeholder="예: 별님"
+                placeholder="이름을 입력하세요"
                 value={person.name}
                 onChange={(e) => updatePerson(key, "name", e.target.value)}
               />
@@ -100,6 +104,8 @@ export default function CompatInputPage() {
               <input
                 type="date"
                 className="mt-1 w-full rounded-xl border border-white/10 bg-background/60 px-3 py-2 text-sm text-foreground focus:border-accent-gold focus:outline-none"
+                min="1900-01-01"
+                max={maxDate || undefined}
                 value={person.birthDate}
                 onChange={(e) => updatePerson(key, "birthDate", e.target.value)}
               />

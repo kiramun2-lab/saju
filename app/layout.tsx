@@ -7,8 +7,8 @@ import { Noto_Serif_KR } from 'next/font/google';
 import { AuthProvider } from '../contexts/auth-context';
 
 export const metadata: Metadata = {
-  title: '운명읽기 | 감성적인 AI 사주 리포트',
-  description: '태어난 순간의 흐름을 분석해 당신의 운명을 읽어드립니다'
+  title: '운명읽기 | 사주의 흐름을 풀어낸 운명 리포트',
+  description: '사주의 흐름을 풀어낸 운명 리포트'
 };
 
 const notoSerif = Noto_Serif_KR({
@@ -24,6 +24,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <link
           rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+        />
+        <link
+          rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/MaruBuri.css"
         />
       </head>
@@ -37,7 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           notoSerif.variable,
           'min-h-screen bg-[#030308] text-white antialiased'
         )}
-        style={{ fontFamily: "'MaruBuri', 'Maruburi', sans-serif" }}
+        style={{ fontFamily: "'Pretendard', 'MaruBuri', 'Maruburi', sans-serif" }}
       >
         <div className="mx-auto min-h-screen max-w-md overflow-hidden pt-8">
           <AuthProvider>{children}</AuthProvider>

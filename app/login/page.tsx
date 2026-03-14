@@ -50,7 +50,7 @@ export default function LoginPage() {
     <>
       <AppHeader />
       <main className="flex min-h-[60vh] flex-col items-center justify-center px-5 pb-12">
-        <Card className="w-full max-w-sm border-white/10 bg-white/5 p-6">
+        <Card noOverlay className="w-full max-w-sm border-white/10 bg-white/5 p-6">
           <h1 className="text-center text-lg font-semibold text-white">로그인</h1>
           <p className="mt-2 text-center text-sm text-white/70">
             카카오 계정으로 간편히 로그인하고
