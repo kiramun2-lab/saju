@@ -143,9 +143,9 @@ function SajuResultContent() {
           const isFree = true; // 테스트: 전 영역 오픈. 정리 후 index === 0 등으로 복구
           const isFlipped = flippedIndex === index;
           const isActive = scrollIndex === index;
-          const leadItem: string | LeadMessageData = leads[index] ?? area.lead;
-          const leadText = typeof leadItem === 'string' ? leadItem : leadItem.text;
-          const leadKeywords = typeof leadItem === 'string' ? [] : (leadItem.keywords ?? []);
+          const leadItem = leads[index] ?? area.lead;
+          const leadText = typeof leadItem === 'string' ? leadItem : (leadItem as LeadMessageData).text;
+          const leadKeywords = typeof leadItem === 'string' ? [] : ((leadItem as LeadMessageData).keywords ?? []);
 
           return (
             <div
