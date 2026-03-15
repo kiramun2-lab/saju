@@ -79,7 +79,7 @@ async function generateWithGemini(
 
   const prompt = buildBatchDetailPrompt(areas, userName);
   const genAI = new GoogleGenerativeAI(apiKey);
-  const modelId = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const modelId = process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite'; // 무료 한도 넉넉
   const model = genAI.getGenerativeModel({
     model: modelId,
     generationConfig: {

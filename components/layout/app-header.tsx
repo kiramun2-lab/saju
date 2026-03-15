@@ -9,9 +9,9 @@ const iconClass = 'h-5 w-5 text-slate-400 hover:text-slate-300 transition-colors
 function LoginIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <circle cx="8" cy="15" r="4" />
-      <path d="M10.85 12.15L19 4" />
-      <path d="M18 5l2 2-4 4-2-2 4-4" />
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+      <polyline points="10 17 15 12 10 7" />
+      <line x1="15" y1="12" x2="3" y2="12" />
     </svg>
   );
 }
@@ -70,7 +70,15 @@ export function AppHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex items-center justify-end gap-5 px-4 py-2">
+      <header className="sticky top-0 z-20 flex items-center justify-end gap-5 px-4 py-1.5">
+        <button
+          type="button"
+          onClick={() => setFaqOpen(true)}
+          className={iconClass}
+          aria-label="자주 묻는 질문"
+        >
+          <CircleQuestionIcon className="h-5 w-5" />
+        </button>
         {isLoggedIn ? (
           <button
             type="button"
@@ -96,14 +104,6 @@ export function AppHeader() {
         >
           <UserIcon className="h-5 w-5" />
         </Link>
-        <button
-          type="button"
-          onClick={() => setFaqOpen(true)}
-          className={iconClass}
-          aria-label="자주 묻는 질문"
-        >
-          <CircleQuestionIcon className="h-5 w-5" />
-        </button>
       </header>
 
       {/* FAQ 모달 */}

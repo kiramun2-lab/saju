@@ -10,7 +10,7 @@ export default function LandingPage() {
       <Starfield />
 
       <main className="relative z-10 flex flex-col items-center px-5 pt-4 pb-12">
-        {/* 첫 화면: 운명읽기 원 + 캐치프레이즈만 (최소 100vh로 CTA와 절대 겹치지 않게) */}
+        {/* 첫 화면: 원 + 캐치프레이즈 + CTA (한 화면에) */}
         <div className="flex min-h-[100vh] min-h-[100dvh] flex-col items-center justify-center">
           <OracleSvg />
 
@@ -33,19 +33,19 @@ export default function LandingPage() {
               당신의 운명을 읽어드립니다.
             </p>
           </div>
-        </div>
 
-        {/* CTA: 스크롤한 다음 화면에만 노출 */}
-        <div
-          className="w-full max-w-[360px] pb-[env(safe-area-inset-bottom)] pt-8"
-          aria-label="운명 읽기 시작"
-        >
-          <Link
-            href="/saju"
-            className="cta-saju block w-full rounded-full py-4 text-center font-semibold tracking-wide text-white transition hover:opacity-95"
+          {/* CTA: 같은 화면에서 조금만 위로 */}
+          <div
+            className="mt-8 w-full max-w-[360px] pb-[env(safe-area-inset-bottom)]"
+            aria-label="운명 읽기 시작"
           >
-            운명 읽기 시작
-          </Link>
+            <Link
+              href="/saju"
+              className="cta-saju block w-full rounded-full py-4 text-center font-semibold tracking-wide text-white transition hover:opacity-95"
+            >
+              운명 읽기 시작
+            </Link>
+          </div>
         </div>
       </main>
     </>

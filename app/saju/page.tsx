@@ -82,6 +82,19 @@ export default function SajuInputPage() {
     return Object.keys(nextErrors).length === 0;
   };
 
+  // 로딩 중 모바일 스크롤 방지
+  useEffect(() => {
+    if (!isAnalyzing) return;
+    const prevBody = document.body.style.overflow;
+    const prevHtml = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevBody;
+      document.documentElement.style.overflow = prevHtml;
+    };
+  }, [isAnalyzing]);
+
   // 진행률 0→93%: 최소 MIN_DURATION_TO_93_MS 동안만 93% 도달. API 완료 후에도 그 시간 지나야 100%+CTA
   useEffect(() => {
     if (!isAnalyzing) return;
@@ -261,9 +274,9 @@ export default function SajuInputPage() {
   }
 
   return (
-    <main className="px-4 pb-16 pt-2">
-      {/* Header: mystical, minimal (모바일 여백 축소) */}
-      <header className="mb-5 text-center">
+    <main className="px-4 pb-16 pt-0">
+      {/* Header: mystical, minimal */}
+      <header className="mb-3 text-center">
         <h1 className="font-serif text-[20px] font-medium leading-[1.5] text-white tracking-wide">
           운명을 읽기 위한
           <br />
@@ -335,7 +348,7 @@ export default function SajuInputPage() {
                     className={clsx(
                       'flex-1 rounded-full border px-3 py-2 text-xs transition',
                       form.calendarType === opt.value
-                        ? 'segmented-toggle-selected border-white/10 text-white'
+                        ? 'segmented-toggle-selected text-white'
                         : 'border-white/[0.08] bg-white/5 text-white/60'
                     )}
                   >
@@ -344,9 +357,6 @@ export default function SajuInputPage() {
                 ))}
               </div>
             </div>
-            <p className="mt-1.5 text-[11px] text-white/45">
-              이 정보는 사주 계산에 사용됩니다.
-            </p>
             {errors.birthDate && (
               <p className="mt-1 text-[11px] text-slate-400">{errors.birthDate}</p>
             )}
