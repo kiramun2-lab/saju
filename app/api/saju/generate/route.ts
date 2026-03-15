@@ -124,6 +124,9 @@ async function generateWithGemini(
 }
 
 export async function POST(request: NextRequest) {
+  const hasKey = Boolean(process.env.GEMINI_API_KEY?.trim());
+  console.log('[saju/generate] GEMINI_API_KEY configured:', hasKey);
+
   try {
     const body = await request.json();
     const { form, leads } = body as { form?: FormInput; leads?: string[] };

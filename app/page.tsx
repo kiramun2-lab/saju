@@ -9,12 +9,12 @@ export default function LandingPage() {
       <div className="fixed inset-0 cosmic-bg" aria-hidden />
       <Starfield />
 
-      <main className="relative z-10 flex flex-col items-center px-5 pt-8 pb-12">
+      <main className="relative z-10 flex flex-col items-center px-5 pt-4 pb-12">
         {/* 첫 화면: 운명읽기 원 + 캐치프레이즈만 (최소 100vh로 CTA와 절대 겹치지 않게) */}
-        <div className="flex min-h-[100vh] min-h-[100dvh] flex-col items-center justify-center pt-2">
+        <div className="flex min-h-[100vh] min-h-[100dvh] flex-col items-center justify-center">
           <OracleSvg />
 
-          <div className="mt-8 max-w-[340px] text-center">
+          <div className="mt-6 max-w-[340px] text-center">
             <p className="text-[22px] leading-[1.75] text-white">
               당신의 사주는
               <br />

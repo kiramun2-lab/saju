@@ -34,11 +34,13 @@ const PROGRESS_STEPS: { pct: number; lines: string[] }[] = [
   { pct: 100, lines: ['분석 완료', '당신의 운명이 준비되었습니다'] },
 ];
 
-// 진행률은 0→93%까지만 타임라인으로. 100%는 API 응답 후에만 설정
+// 진행률은 0→93%까지만 타임라인으로. 93%까지 최소 이 시간은 걸리게 함
 const STEP_TIMINGS_MS = [
   0, 1200, 2600, 4200, 5800, 7800, 9800, 11800, 13800, 16300, 18300, 19800, 20800, 21800,
 ];
-const MAX_PCT_BEFORE_API = 93; // API 오기 전까지 최대 93%
+const TIMELINE_END_MS = STEP_TIMINGS_MS[STEP_TIMINGS_MS.length - 1]; // 21800
+const MIN_DURATION_TO_93_MS = 12000; // 93% 도달까지 최소 12초
+const MAX_PCT_BEFORE_API = 93;
 
 export default function SajuInputPage() {
   const router = useRouter();
@@ -80,21 +82,30 @@ export default function SajuInputPage() {
     return Object.keys(nextErrors).length === 0;
   };
 
-  // 진행률 0→93%만 타임라인으로. API 응답 오면 타임라인 멈추고 100% 유지
+  // 진행률 0→93%: 최소 MIN_DURATION_TO_93_MS 동안만 93% 도달. API 완료 후에도 그 시간 지나야 100%+CTA
   useEffect(() => {
     if (!isAnalyzing) return;
     apiCompletedRef.current = false;
     timelineStart.current = Date.now();
 
     const tick = () => {
-      if (apiCompletedRef.current) return; // API 완료됐으면 더 이상 진행률 갱신 안 함
       const start = timelineStart.current;
       if (start == null) return;
       const elapsed = Date.now() - start;
 
+      // API 완료됐고 최소 시간도 지났으면 100% + CTA 표시 후 타임라인 종료
+      if (apiCompletedRef.current && elapsed >= MIN_DURATION_TO_93_MS) {
+        setProgressPct(100);
+        setStepIndex(PROGRESS_STEPS.length - 1);
+        setShowCta(true);
+        return;
+      }
+
+      // 93%까지 최소 MIN_DURATION_TO_93_MS 걸리도록 가상 경과시간 사용
+      const virtualElapsed = Math.min(elapsed, MIN_DURATION_TO_93_MS) * (TIMELINE_END_MS / MIN_DURATION_TO_93_MS);
       let nextStep = 0;
       for (let i = STEP_TIMINGS_MS.length - 1; i >= 0; i--) {
-        if (elapsed >= STEP_TIMINGS_MS[i]) {
+        if (virtualElapsed >= STEP_TIMINGS_MS[i]) {
           nextStep = i;
           break;
         }
@@ -154,16 +165,10 @@ export default function SajuInputPage() {
             // ignore
           }
         }
-        apiCompletedRef.current = true;
-        setProgressPct(100);
-        setStepIndex(PROGRESS_STEPS.length - 1);
-        setShowCta(true);
+        apiCompletedRef.current = true; // tick()에서 최소 시간 지난 뒤 100%+CTA 표시
       })
       .catch(() => {
         apiCompletedRef.current = true;
-        setProgressPct(100);
-        setStepIndex(PROGRESS_STEPS.length - 1);
-        setShowCta(true);
       });
   }, [isAnalyzing, form.name, form.relation, form.birthDate, form.birthTime, form.gender, form.calendarType]);
 
@@ -195,7 +200,7 @@ export default function SajuInputPage() {
     const isComplete = progressPct === 100;
 
     return (
-      <main className="flex min-h-[70vh] flex-col items-center justify-center px-6">
+      <main className="fixed inset-0 z-10 flex flex-col items-center justify-center overflow-hidden px-6">
         <div className="w-full max-w-[320px] space-y-8">
           {/* Progress bar */}
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
@@ -256,15 +261,15 @@ export default function SajuInputPage() {
   }
 
   return (
-    <main className="px-4 pb-16 pt-6">
-      {/* Header: mystical, minimal */}
-      <header className="mb-8 text-center">
-        <h1 className="font-serif text-[22px] font-medium leading-[1.5] text-white tracking-wide">
+    <main className="px-4 pb-16 pt-2">
+      {/* Header: mystical, minimal (모바일 여백 축소) */}
+      <header className="mb-5 text-center">
+        <h1 className="font-serif text-[20px] font-medium leading-[1.5] text-white tracking-wide">
           운명을 읽기 위한
           <br />
           좌표를 입력하세요
         </h1>
-        <p className="mt-3 text-[13px] leading-relaxed text-white/60">
+        <p className="mt-2 text-[12px] leading-relaxed text-white/60">
           태어난 순간을 통해
           <br />
           당신의 사주를 분석합니다
