@@ -16,7 +16,7 @@ const config: Config = {
           dark: '#2B2259'
         },
         accent: {
-          gold: '#F5C76B'
+          gold: '#94a3b8' // 회색 톤 (기존 gold 대신)
         },
         muted: {
           DEFAULT: '#1A1630'
@@ -27,12 +27,12 @@ const config: Config = {
         serif: ['var(--font-serif)', 'Georgia', 'serif']
       },
       boxShadow: {
-        'glow-gold': '0 0 20px rgba(245, 199, 107, 0.35)',
+        'glow-gold': '0 0 20px rgba(148, 163, 184, 0.2)',
         'card-soft': '0 18px 40px rgba(0, 0, 0, 0.45)'
       },
       backgroundImage: {
         'cosmic-gradient':
-          'radial-gradient(circle at top, rgba(245,199,107,0.12), transparent 55%), radial-gradient(circle at bottom, rgba(108,76,207,0.22), transparent 55%)'
+          'radial-gradient(circle at top, rgba(148,163,184,0.08), transparent 55%), radial-gradient(circle at bottom, rgba(148,163,184,0.06), transparent 55%)'
       }
     }
   },

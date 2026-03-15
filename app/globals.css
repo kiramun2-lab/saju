@@ -89,7 +89,7 @@ body {
 }
 
 .text-gradient-gold {
-  background: linear-gradient(120deg, #e8d5a3, #f5e6b8);
+  background: linear-gradient(120deg, #94a3b8, #e2e8f0);
   -webkit-background-clip: text;
   color: transparent;
 }
@@ -113,10 +113,10 @@ body {
 
 /* ——— Segmented toggle: selected cosmic glow ——— */
 .segmented-toggle-selected {
-  border-color: rgba(245, 199, 107, 0.5);
-  background: rgba(245, 199, 107, 0.12);
+  border-color: rgba(148, 163, 184, 0.4);
+  background: rgba(148, 163, 184, 0.1);
   box-shadow:
-    0 0 16px rgba(245, 199, 107, 0.2),
+    0 0 12px rgba(148, 163, 184, 0.15),
     inset 0 0 12px rgba(255, 255, 255, 0.04);
 }
 
@@ -210,7 +210,31 @@ body {
     0 0 48px rgba(245, 199, 107, 0.18);
 }
 
-/* ——— 결과 페이지: horizontal card carousel (첫 카드 가운데, 오른쪽 살짝 노출) ——— */
+/* ——— 결과 페이지: 차콜 배경 + 은은한 별빛 패턴 (작은 흰색 점 + 반짝임) ——— */
+.result-page-bg {
+  background-color: #0A0A0E;
+}
+.result-page-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* 격자형 작은 별 + 오프셋 레이어로 자연스러운 밀도 */
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.45) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.35) 0.5px, transparent 0.5px);
+  background-size: 28px 28px, 36px 36px, 44px 44px;
+  background-position: 0 0, 14px 10px, 6px 22px;
+  background-repeat: repeat;
+  animation: result-stars-twinkle 5s ease-in-out infinite;
+}
+@keyframes result-stars-twinkle {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
+/* ——— 결과 페이지: horizontal card carousel (상하 여유로 그림자 잘림 방지) ——— */
 .result-carousel {
   display: flex;
   gap: 1rem;
@@ -252,6 +276,7 @@ body {
 .flip-card.flipped .flip-card-inner {
   transform: rotateY(180deg);
 }
+/* ——— 플립 카드: 딥 차콜 불투명 + 희미한 골드/라일락 드롭 섀도우 ——— */
 .flip-card-front,
 .flip-card-back {
   position: absolute;
@@ -262,6 +287,12 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  background: #111115;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(212, 175, 255, 0.06),
+    0 0 40px rgba(212, 175, 255, 0.04);
 }
 .flip-card-front {
   transform: rotateY(0deg);
@@ -269,70 +300,30 @@ body {
 .flip-card-back {
   transform: rotateY(180deg);
 }
-.flip-card-glow {
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 0 24px rgba(255, 255, 255, 0.04);
-}
-.flip-card-halo {
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 0 32px rgba(245, 199, 107, 0.14);
-}
 
-/* 중앙에 온 메인 카드: 황금빛 등 + 색감 (래퍼에 적용해 글로우가 잘리지 않음) */
+/* 중앙 메인 카드: 동일 스타일 유지 */
 .result-carousel-card-wrap.flip-card-active {
   border-radius: 1.25rem;
 }
 .result-carousel-card-wrap.flip-card-active .flip-card-front,
 .result-carousel-card-wrap.flip-card-active .flip-card-back {
+  background: #111115;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow:
-    0 24px 64px rgba(0, 0, 0, 0.65),
-    0 0 0 1px rgba(245, 199, 107, 0.28),
-    0 0 36px rgba(245, 199, 107, 0.24),
-    0 0 72px rgba(245, 199, 107, 0.1);
-}
-.result-carousel-card-wrap.flip-card-active .flip-card-front {
-  background: linear-gradient(
-    160deg,
-    rgba(18, 16, 24, 0.7) 0%,
-    rgba(26, 22, 34, 0.65) 40%,
-    rgba(30, 26, 38, 0.7) 100%
-  );
-  border: 1px solid rgba(245, 199, 107, 0.12);
-}
-.result-carousel-card-wrap.flip-card-active .flip-card-back {
-  background: linear-gradient(
-    160deg,
-    rgba(18, 16, 24, 0.7) 0%,
-    rgba(26, 22, 34, 0.65) 40%,
-    rgba(30, 26, 38, 0.7) 100%
-  );
-  border: 1px solid rgba(245, 199, 107, 0.12);
+    0 25px 50px -12px rgba(0, 0, 0, 0.55),
+    0 0 90px rgba(212, 175, 255, 0.08),
+    0 0 50px rgba(212, 175, 255, 0.05);
 }
 
-/* ——— 결과 카드: 리드 그라데이션 텍스트 (premium) ——— */
-.result-card-lead-gradient {
-  font-family: 'MaruBuri', 'Maruburi', sans-serif;
-  font-size: 22px;
-  font-weight: 600;
-  background: linear-gradient(135deg, #FFD97A 0%, #C7A6FF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ——— 결과 카드: subtle glow (cosmic / premium) ——— */
-.result-carousel-card-wrap.flip-card-active .flip-card-front,
-.result-carousel-card-wrap.flip-card-active .flip-card-back {
+/* 호버: 카드 살짝 상승 + 테두리·오라 밝아짐 */
+.result-carousel-card-wrap:hover .flip-card-front,
+.result-carousel-card-wrap:hover .flip-card-back {
+  border-color: rgba(255, 255, 255, 0.2);
   box-shadow:
-    0 24px 64px rgba(0, 0, 0, 0.65),
-    0 0 0 1px rgba(245, 199, 107, 0.28),
-    0 0 36px rgba(245, 199, 107, 0.24),
-    0 0 72px rgba(245, 199, 107, 0.1),
-    0 0 40px rgba(255, 210, 120, 0.15);
+    0 28px 56px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 0 24px rgba(255, 255, 255, 0.08),
+    0 0 80px rgba(212, 175, 255, 0.07);
 }
 
 /* ——— 결과 카드 뒷면: 스크롤 영역 ——— */

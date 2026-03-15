@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { clsx } from 'clsx';
-import { hashSajuInput } from '../../lib/leadMessages';
+import { hashSajuInput, getLeadsForResult } from '../../lib/leadMessages';
 
 type SajuFormState = {
   name: string;
@@ -34,12 +34,11 @@ const PROGRESS_STEPS: { pct: number; lines: string[] }[] = [
   { pct: 100, lines: ['분석 완료', '당신의 운명이 준비되었습니다'] },
 ];
 
-// 각 단계까지 도달하는 시점 (ms). 93→100 약 1초, 총 ~22초
+// 진행률은 0→93%까지만 타임라인으로. 100%는 API 응답 후에만 설정
 const STEP_TIMINGS_MS = [
   0, 1200, 2600, 4200, 5800, 7800, 9800, 11800, 13800, 16300, 18300, 19800, 20800, 21800,
 ];
-
-const PAUSE_AT_100_MS = 800;
+const MAX_PCT_BEFORE_API = 93; // API 오기 전까지 최대 93%
 
 export default function SajuInputPage() {
   const router = useRouter();
@@ -59,6 +58,7 @@ export default function SajuInputPage() {
   const [maxDate, setMaxDate] = useState('');
   const timelineStart = useRef<number | null>(null);
   const rafId = useRef<number>(0);
+  const apiCompletedRef = useRef(false);
 
   useEffect(() => {
     setMaxDate(new Date().toISOString().slice(0, 10));
@@ -80,22 +80,17 @@ export default function SajuInputPage() {
     return Object.keys(nextErrors).length === 0;
   };
 
-  // 코스믹 분석 타임라인: 불규칙 퍼센트 + 100% 후 0.8초 멈춤 → CTA 표시
+  // 진행률 0→93%만 타임라인으로. API 응답 오면 타임라인 멈추고 100% 유지
   useEffect(() => {
     if (!isAnalyzing) return;
+    apiCompletedRef.current = false;
     timelineStart.current = Date.now();
 
     const tick = () => {
+      if (apiCompletedRef.current) return; // API 완료됐으면 더 이상 진행률 갱신 안 함
       const start = timelineStart.current;
       if (start == null) return;
       const elapsed = Date.now() - start;
-
-      if (elapsed >= STEP_TIMINGS_MS[STEP_TIMINGS_MS.length - 1] + PAUSE_AT_100_MS) {
-        setProgressPct(100);
-        setStepIndex(PROGRESS_STEPS.length - 1);
-        setShowCta(true);
-        return;
-      }
 
       let nextStep = 0;
       for (let i = STEP_TIMINGS_MS.length - 1; i >= 0; i--) {
@@ -104,8 +99,9 @@ export default function SajuInputPage() {
           break;
         }
       }
-      setProgressPct(PROGRESS_STEPS[nextStep].pct);
-      setStepIndex(nextStep);
+      const pct = Math.min(PROGRESS_STEPS[nextStep].pct, MAX_PCT_BEFORE_API);
+      setProgressPct(pct);
+      setStepIndex(pct >= MAX_PCT_BEFORE_API ? PROGRESS_STEPS.length - 2 : nextStep);
       rafId.current = requestAnimationFrame(tick);
     };
     rafId.current = requestAnimationFrame(tick);
@@ -117,6 +113,59 @@ export default function SajuInputPage() {
     if (!validate()) return;
     setIsAnalyzing(true);
   };
+
+  // "내 운명 읽기" 누른 순간 Gemini 1회 호출. 응답 오면 100% + CTA 바로 표시
+  useEffect(() => {
+    if (!isAnalyzing) return;
+    setShowCta(false);
+    const seed = hashSajuInput({
+      name: form.name,
+      relation: form.relation,
+      birthDate: form.birthDate,
+      calendarType: form.calendarType,
+      birthTime: form.birthTime,
+      gender: form.gender,
+    });
+    const leads = getLeadsForResult(seed);
+    fetch('/api/saju/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        form: {
+          name: form.name,
+          relation: form.relation,
+          birthDate: form.birthDate,
+          birthTime: form.birthTime,
+          gender: form.gender,
+          calendarType: form.calendarType,
+        },
+        leads,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data: { details?: Record<string, string[]> }) => {
+        if (data.details) {
+          try {
+            sessionStorage.setItem(
+              'saju_result_details',
+              JSON.stringify({ seed, details: data.details })
+            );
+          } catch {
+            // ignore
+          }
+        }
+        apiCompletedRef.current = true;
+        setProgressPct(100);
+        setStepIndex(PROGRESS_STEPS.length - 1);
+        setShowCta(true);
+      })
+      .catch(() => {
+        apiCompletedRef.current = true;
+        setProgressPct(100);
+        setStepIndex(PROGRESS_STEPS.length - 1);
+        setShowCta(true);
+      });
+  }, [isAnalyzing, form.name, form.relation, form.birthDate, form.birthTime, form.gender, form.calendarType]);
 
   const goToResult = () => {
     const seed = hashSajuInput({
@@ -236,7 +285,7 @@ export default function SajuInputPage() {
               required
             />
             {errors.name && (
-              <p className="mt-1 text-[11px] text-amber-400/90">{errors.name}</p>
+              <p className="mt-1 text-[11px] text-slate-400">{errors.name}</p>
             )}
           </div>
 
@@ -294,10 +343,10 @@ export default function SajuInputPage() {
               이 정보는 사주 계산에 사용됩니다.
             </p>
             {errors.birthDate && (
-              <p className="mt-1 text-[11px] text-amber-400/90">{errors.birthDate}</p>
+              <p className="mt-1 text-[11px] text-slate-400">{errors.birthDate}</p>
             )}
             {errors.calendarType && (
-              <p className="mt-1 text-[11px] text-amber-400/90">{errors.calendarType}</p>
+              <p className="mt-1 text-[11px] text-slate-400">{errors.calendarType}</p>
             )}
           </div>
 
@@ -353,7 +402,7 @@ export default function SajuInputPage() {
               ))}
             </div>
             {errors.gender && (
-              <p className="mt-1.5 text-[11px] text-amber-400/90">{errors.gender}</p>
+              <p className="mt-1.5 text-[11px] text-slate-400">{errors.gender}</p>
             )}
           </div>
 
