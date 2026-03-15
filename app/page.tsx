@@ -9,12 +9,11 @@ export default function LandingPage() {
       <div className="fixed inset-0 cosmic-bg" aria-hidden />
       <Starfield />
 
-      <main className="relative z-10 flex min-h-screen flex-col items-center px-5 pt-8 pb-28">
-        {/* 운명읽기 원 + 캐치프레이즈: 위쪽에 배치해 한 눈에 들어오게 */}
+      <main className="relative z-10 flex min-h-screen flex-col items-center px-5 pt-8 pb-12">
+        {/* 운명읽기 원 + 캐치프레이즈 */}
         <div className="flex flex-col items-center pt-2">
           <OracleSvg />
 
-          {/* Text block: CTA와 겹치지 않도록 여백 확보 */}
           <div className="mt-8 max-w-[340px] text-center">
             <p className="text-[22px] leading-[1.75] text-white">
               당신의 사주는
@@ -35,14 +34,12 @@ export default function LandingPage() {
             </p>
           </div>
         </div>
-      </main>
 
-      {/* CTA: 하단 고정, 캐치프레이즈와 거리 줄임 */}
-      <div
-        className="fixed bottom-6 left-0 right-0 z-20 px-4 pb-[env(safe-area-inset-bottom)]"
-        aria-label="운명 읽기 시작"
-      >
-        <div className="mx-auto w-full max-w-[360px]">
+        {/* CTA: 스크롤해야 보임, 글자와 겹치지 않음 */}
+        <div
+          className="mt-16 w-full max-w-[360px] pb-[env(safe-area-inset-bottom)]"
+          aria-label="운명 읽기 시작"
+        >
           <Link
             href="/saju"
             className="cta-saju block w-full rounded-full py-4 text-center font-semibold tracking-wide text-white transition hover:opacity-95"
@@ -50,7 +47,7 @@ export default function LandingPage() {
             운명 읽기 시작
           </Link>
         </div>
-      </div>
+      </main>
     </>
   );
 }
