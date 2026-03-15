@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { clsx } from 'clsx';
 import { DESTINY_AREAS } from '../../../lib/dummyData';
 import { getLeadsForResult } from '../../../lib/leadMessages';
+import { computeSajuPillars } from '../../../lib/sajuAlgorithm';
 
 const PAYMENT_PRICE = 990;
 
@@ -43,6 +44,24 @@ function SajuResultContent() {
     seedNum !== undefined && !Number.isNaN(seedNum) ? seedNum : undefined;
   const [leads] = useState(() => getLeadsForResult(effectiveSeed));
   const [aiDetails, setAiDetails] = useState<Record<string, string[]> | null>(null);
+  const [sajuDisplay, setSajuDisplay] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('saju_result_form');
+      const form = raw ? (JSON.parse(raw) as Record<string, string>) : null;
+      if (form?.birthDate) {
+        const pillars = computeSajuPillars({
+          birthDate: form.birthDate,
+          birthTime: form.birthTime ?? '',
+          calendarType: form.calendarType ?? 'solar',
+        });
+        if (pillars) setSajuDisplay(pillars.displayFull);
+      }
+    } catch {
+      setSajuDisplay(null);
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -93,6 +112,14 @@ function SajuResultContent() {
           <br />
           열 가지 영역
         </h1>
+        {sajuDisplay && (
+          <p
+            className="mt-3 text-sm font-medium tracking-wide text-white/80"
+            style={{ fontFamily: "'Pretendard', sans-serif" }}
+          >
+            {sajuDisplay}
+          </p>
+        )}
       </header>
 
       <section

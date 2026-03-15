@@ -31,11 +31,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/MaruBuri.css"
         />
       </head>
-      <Script
-        src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
-        crossOrigin="anonymous"
-        strategy="beforeInteractive"
-      />
       <body
         className={clsx(
           notoSerif.variable,
@@ -43,6 +38,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         )}
         style={{ fontFamily: "'Pretendard', 'MaruBuri', 'Maruburi', sans-serif" }}
       >
+        <Script
+          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />
         <div className="mx-auto min-h-screen max-w-md overflow-hidden pt-8">
           <AuthProvider>{children}</AuthProvider>
         </div>

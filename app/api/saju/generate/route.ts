@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { DESTINY_AREAS } from '../../../../lib/dummyData';
 import { AREA_PROMPTS, SAJU_COMMON_PROMPT, SECTION_IDS } from '../../../../lib/areaPrompts';
+import { computeSajuPillars } from '../../../../lib/sajuAlgorithm';
 
 type FormInput = {
   name: string;
@@ -21,14 +22,23 @@ function getFallbackDetails(): Record<string, string[]> {
 }
 
 function formatUserInfo(form: FormInput): string {
-  return [
+  const pillars = computeSajuPillars({
+    birthDate: form.birthDate,
+    birthTime: form.birthTime ?? '',
+    calendarType: form.calendarType ?? 'solar',
+  });
+  const lines = [
     `이름: ${form.name || '(미입력)'}`,
     `관계: ${form.relation || '(미입력)'}`,
     `생년월일: ${form.birthDate}`,
     `태어난 시간: ${form.birthTime}`,
     `성별: ${form.gender}`,
     `양력/음력: ${form.calendarType || '(미입력)'}`,
-  ].join('\n');
+  ];
+  if (pillars) {
+    lines.push(`사주팔자: ${pillars.displayFull}`);
+  }
+  return lines.join('\n');
 }
 
 /** 한 영역에 대해: 영역별 프롬프트 + 리드 + 사용자 정보로 상세 문단 1세트 생성 */

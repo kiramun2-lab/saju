@@ -9,26 +9,26 @@ export default function LandingPage() {
       <div className="fixed inset-0 cosmic-bg" aria-hidden />
       <Starfield />
 
-      <main className="relative z-10 flex min-h-screen flex-col items-center px-5 pt-16 pb-36">
-        {/* Center: SVG 성운(radialGradient + mask) + 검은 원 + 운명읽기 */}
-        <div className="flex flex-1 flex-col items-center justify-center">
+      <main className="relative z-10 flex min-h-screen flex-col items-center px-5 pt-8 pb-28">
+        {/* 운명읽기 원 + 캐치프레이즈: 위쪽에 배치해 한 눈에 들어오게 */}
+        <div className="flex flex-col items-center pt-2">
           <OracleSvg />
 
-          {/* Text block: 줄바꿈 반영, 가운데 정렬 */}
-          <div className="mt-12 max-w-[340px] text-center">
+          {/* Text block: CTA와 겹치지 않도록 여백 확보 */}
+          <div className="mt-8 max-w-[340px] text-center">
             <p className="text-[22px] leading-[1.75] text-white">
               당신의 사주는
               <br />
               평범한 사주일까요?
             </p>
-            <p className="mt-5 text-[22px] leading-[1.75] text-white">
+            <p className="mt-4 text-[22px] leading-[1.75] text-white">
               아니면
               <br />
               한 번쯤 크게 방향이 바뀌는
               <br />
               사주일까요?
             </p>
-            <p className="mt-6 text-[16px] leading-[1.7] text-white opacity-80">
+            <p className="mt-5 text-[16px] leading-[1.7] text-white opacity-80">
               태어난 순간의 흐름을 분석해
               <br />
               당신의 운명을 읽어드립니다.
@@ -37,17 +37,19 @@ export default function LandingPage() {
         </div>
       </main>
 
-      {/* CTA: 운명 읽기 시작 */}
+      {/* CTA: 하단 고정, 캐치프레이즈와 거리 줄임 */}
       <div
-        className="fixed bottom-8 left-1/2 z-20 w-[85%] max-w-[360px] -translate-x-1/2"
+        className="fixed bottom-6 left-0 right-0 z-20 px-4 pb-[env(safe-area-inset-bottom)]"
         aria-label="운명 읽기 시작"
       >
-        <Link
-          href="/saju"
-          className="cta-saju block w-full rounded-full py-4 text-center font-semibold tracking-wide text-white transition hover:opacity-95"
-        >
-          운명 읽기 시작
-        </Link>
+        <div className="mx-auto w-full max-w-[360px]">
+          <Link
+            href="/saju"
+            className="cta-saju block w-full rounded-full py-4 text-center font-semibold tracking-wide text-white transition hover:opacity-95"
+          >
+            운명 읽기 시작
+          </Link>
+        </div>
       </div>
     </>
   );

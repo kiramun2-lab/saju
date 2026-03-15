@@ -12,7 +12,7 @@ export function AppHeader() {
   const { isLoggedIn, logout } = useAuth();
 
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-end gap-3 border-b border-white/[0.06] bg-[#030308]/80 px-4 py-3 text-sm backdrop-blur-sm">
+    <header className="sticky top-0 z-20 flex items-center justify-end gap-3 px-4 py-3 text-sm">
       {isLoggedIn ? (
         <button
           type="button"
