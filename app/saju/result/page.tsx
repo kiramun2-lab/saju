@@ -140,7 +140,7 @@ function SajuResultContent() {
         onScroll={handleScroll}
       >
         {DESTINY_AREAS.map((area, index) => {
-          const isFree = true; // 테스트: 전 영역 오픈. 정리 후 index === 0 등으로 복구
+          const isFree = index === 0; // 1번만 무료, 나머지 9개는 결제 후 오픈
           const isFlipped = flippedIndex === index;
           const isActive = scrollIndex === index;
           const leadItem = leads[index] ?? area.lead;
