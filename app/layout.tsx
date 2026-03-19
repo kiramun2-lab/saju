@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           crossOrigin="anonymous"
           strategy="beforeInteractive"
         />
-        <div className="mx-auto min-h-screen max-w-md overflow-hidden pt-8">
+        <div className="mx-auto min-h-screen max-w-md overflow-x-hidden pt-8">
           <AuthProvider>{children}</AuthProvider>
         </div>
       </body>

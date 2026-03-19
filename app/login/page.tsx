@@ -35,16 +35,23 @@ export default function LoginPage() {
   }, [initKakao]);
 
   const handleKakaoLogin = () => {
+    if (!KAKAO_JS_KEY) {
+      alert('카카오 JavaScript 키가 설정되지 않았습니다. (NEXT_PUBLIC_KAKAO_JS_KEY)');
+      return;
+    }
     if (!KAKAO_REDIRECT_URI) {
       alert('카카오 Redirect URI가 설정되지 않았습니다. (NEXT_PUBLIC_KAKAO_REDIRECT_URI)');
       return;
     }
+    initKakao(); // 버튼 클릭 시 한 번 더 초기화 시도 (SDK 지연 로드 대응)
     if (!window.Kakao?.Auth) {
       alert('카카오 SDK가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.');
       return;
     }
     window.Kakao.Auth.authorize({ redirectUri: KAKAO_REDIRECT_URI });
   };
+
+  const kakaoReady = Boolean(KAKAO_JS_KEY && KAKAO_REDIRECT_URI);
 
   return (
     <>
@@ -60,7 +67,8 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={handleKakaoLogin}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#FEE500] py-3 text-sm font-semibold text-[#191919] transition hover:brightness-110"
+            disabled={!kakaoReady}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#FEE500] py-3 text-sm font-semibold text-[#191919] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <span>카카오로 3초만에 시작하기</span>
           </button>
